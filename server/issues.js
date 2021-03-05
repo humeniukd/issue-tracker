@@ -14,7 +14,7 @@ for (let i = 0; i < 10; i++) {
 
   __data[id] = {
     id,
-    status: statuses.OPEN,
+    status: Math.floor(Math.random() * Math.floor(3)),
     title: `Task ${i}`,
     description: 'Lorem ipsum dolor sit amet'
   }
