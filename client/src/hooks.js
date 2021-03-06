@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState } from 'react'
 import { fetchIssues } from './api'
 
 export const useIssues = () => {
@@ -8,6 +8,7 @@ export const useIssues = () => {
 
   async function fetch() {
     try {
+      setIsLoading(true)
       const { data } = await fetchIssues()
       setIssues(data)
     } catch (e) {
@@ -17,9 +18,5 @@ export const useIssues = () => {
     }
   }
 
-  useEffect(() => {
-    setIsLoading(true)
-    fetch()
-  }, [])
-  return [isLoading, issues, error]
+  return [isLoading, issues, error, fetch]
 }

@@ -1,8 +1,7 @@
 import crypto from 'crypto'
-
 const __data = {}
 
-const statuses = {
+const STATUSES = {
   OPEN: 0,
   PENDING: 1,
   CLOSED: 2,
@@ -26,6 +25,30 @@ export const list = async () => {
   return items
 }
 
+export const patch = async (id, status) => {
+  const item = __data[id]
+
+  switch (item.status) {
+    case STATUSES.OPEN:
+      if (status !== STATUSES.PENDING)
+        throw 'Wrong status'
+      break
+    case STATUSES.PENDING:
+      if (status !== STATUSES.CLOSED)
+        throw 'Wrong status'
+      break
+    default:
+      throw 'Wrong status'
+  }
+
+  __data[id] = {
+    ...item,
+    status
+  }
+  return __data[id]
+}
+
 export default {
-  list
+  list,
+  patch
 }

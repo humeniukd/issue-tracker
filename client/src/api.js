@@ -9,3 +9,6 @@ export const STATUSES = {
 }
 
 export const fetchIssues = () => axios.get(`${BASE}/issues`)
+
+export const patchIssue = (issueId, status) =>
+  axios.patch(`${BASE}/issues/${issueId}`, { status })
