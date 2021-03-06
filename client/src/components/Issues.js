@@ -14,7 +14,7 @@ const useStyles = makeStyles(() =>
 );
 
 function Issues() {
-  const [isLoading, issues, error, fetch] = useIssues()
+  const [isLoading, issues, fetch] = useIssues()
 
   useEffect(() => {
     fetch()
@@ -38,7 +38,6 @@ function Issues() {
             .map(issue => <Card key={issue.id} issue={issue} refresh={fetch}/>)}
         </Grid>
       </Grid>
-      {error && error.message}
     </div>
   );
 }

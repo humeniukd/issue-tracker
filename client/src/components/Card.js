@@ -1,12 +1,19 @@
-import React, { useCallback, useState } from 'react'
+import React, { useState } from 'react'
 import Forward from '@material-ui/icons/Forward'
-import { Button, Paper } from '@material-ui/core'
+import { Box, Button, Paper } from '@material-ui/core'
+import Dialog from '@material-ui/core/Dialog';
+import DialogActions from '@material-ui/core/DialogActions';
+import DialogContent from '@material-ui/core/DialogContent';
+import DialogContentText from '@material-ui/core/DialogContentText';
+import DialogTitle from '@material-ui/core/DialogTitle';
 import { createStyles, makeStyles } from '@material-ui/core/styles'
-import { patchIssue, STATUSES } from '../api'
+import { STATUSES } from '../api'
+import { usePatchIssue } from '../hooks'
 
 const useStyles = makeStyles((theme) =>
   createStyles({
     paper: {
+      marginBottom: theme.spacing(1),
       padding: theme.spacing(2),
       textAlign: 'center',
       color: theme.palette.text.secondary,
@@ -16,21 +23,8 @@ const useStyles = makeStyles((theme) =>
 
 function Card({ issue, refresh }) {
   const classes = useStyles();
-  const [isLoading, setIsLoading] = useState(false)
-
-  const onClick = useCallback((id, status) => {
-    async function patch(id, status) {
-      try {
-        setIsLoading(true)
-        await patchIssue(id, status)
-      } catch (e) {
-      } finally {
-        refresh()
-        setIsLoading(false)
-      }
-    }
-    patch(id, status)
-  }, [setIsLoading])
+  const [isLoading, patch] = usePatchIssue();
+  const [isOpen, setIsOpen] = useState();
 
   const status = status => {
     switch (status) {
@@ -39,17 +33,51 @@ function Card({ issue, refresh }) {
       case STATUSES.PENDING:
         return STATUSES.CLOSED
     }
+  }
+  const handleClose = () => setIsOpen(false)
 
+  const handleConfirm = () => {
+    patch(issue.id, status(issue.status)).then(refresh)
+    handleClose()
   }
 
   return <Paper className={classes.paper}>
-    <b>{issue.title}</b>
-    <br/>
-    {issue.description}
-    {issue.status !== STATUSES.CLOSED && <Button disabled={isLoading}
-      onClick={() => onClick(issue.id, status(issue.status))}>
-      <Forward/>
-    </Button>}
+    <Box display="flex">
+      <Box flexGrow={1}>
+        <h3>{issue.title}</h3>
+        <br/>
+        {issue.description}
+      </Box>
+      {STATUSES.CLOSED !== issue.status &&
+        <Box display="flex" justifyContent="center">
+          <Button
+            onClick={() => setIsOpen(true)}>
+            <Forward/>
+          </Button>
+        </Box>}
+    </Box>
+    <Dialog
+      open={isOpen}
+      onClose={handleClose}
+    >
+      <DialogTitle>Confirmation</DialogTitle>
+      <DialogContent>
+        <DialogContentText>
+          {`You about to change status of ${issue.title}?`}
+        </DialogContentText>
+      </DialogContent>
+      <DialogActions>
+        <Button disabled={isLoading}
+            onClick={handleConfirm}
+            color="primary"
+            autoFocus>
+          Confirm
+        </Button>
+        <Button onClick={handleClose}>
+          Cancel
+        </Button>
+      </DialogActions>
+    </Dialog>
   </Paper>
 }
 

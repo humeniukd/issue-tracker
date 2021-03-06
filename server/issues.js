@@ -31,14 +31,14 @@ export const patch = async (id, status) => {
   switch (item.status) {
     case STATUSES.OPEN:
       if (status !== STATUSES.PENDING)
-        throw 'Wrong status'
+        throw new Error(`Wrong status ${status}`)
       break
     case STATUSES.PENDING:
       if (status !== STATUSES.CLOSED)
-        throw 'Wrong status'
+        throw new Error(`Wrong status ${status}`)
       break
     default:
-      throw 'Wrong status'
+      throw new Error('Wrong issue status')
   }
 
   __data[id] = {
