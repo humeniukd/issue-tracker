@@ -1,14 +1,14 @@
 import issues from '../issues.js'
 
-const list = async (req, res) => {
+const list = async () => {
   const items = await issues.list()
-  res.send(items)
+  return items
 }
 
-const patch = async (req, res) => {
+const patch = async (req) => {
   const { params, body } = req
   const item = await issues.patch(params.id, body.status)
-  res.send(item)
+  return item
 }
 
 export default {

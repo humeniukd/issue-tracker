@@ -40,7 +40,7 @@ export const useError = () => {
     setError(error)
     return Promise.reject(error);
   });
-  return error
+  return [error, setError]
 }
 
 

@@ -1,4 +1,5 @@
 import crypto from 'crypto'
+import { NotFoundError, BadRequestError } from './errors.js'
 const __data = {}
 
 const STATUSES = {
@@ -27,18 +28,19 @@ export const list = async () => {
 
 export const patch = async (id, status) => {
   const item = __data[id]
+  if (!item) throw new NotFoundError()
 
   switch (item.status) {
     case STATUSES.OPEN:
       if (status !== STATUSES.PENDING)
-        throw new Error(`Wrong status ${status}`)
+        throw new BadRequestError(`Wrong status ${status}`)
       break
     case STATUSES.PENDING:
       if (status !== STATUSES.CLOSED)
-        throw new Error(`Wrong status ${status}`)
+        throw new BadRequestError(`Wrong status ${status}`)
       break
     default:
-      throw new Error('Wrong issue status')
+      throw new BadRequestError('Wrong issue status')
   }
 
   __data[id] = {

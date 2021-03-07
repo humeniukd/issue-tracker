@@ -1,17 +1,18 @@
+import Snackbar from '@material-ui/core/Snackbar';
 import './App.css';
 import Issues from './components/Issues';
 import { useError } from './hooks'
-import Snackbar from '@material-ui/core/Snackbar';
 
 function App() {
-  const error = useError()
+  const [error, setError] = useError()
   return (
     <div className="App">
-      <h1>Issue tracker:</h1>
+      <h1>Issue tracker</h1>
       <Issues />
       {error && <Snackbar
+        autoHideDuration={5000}
         open={Boolean(error)}
-        autoHideDuration={6000}
+        onClose={() => setError()}
         message={error.message}
       />}
     </div>

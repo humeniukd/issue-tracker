@@ -24,7 +24,7 @@ const useStyles = makeStyles((theme) =>
 function Card({ issue, refresh }) {
   const classes = useStyles();
   const [isLoading, patch] = usePatchIssue();
-  const [isOpen, setIsOpen] = useState();
+  const [isOpen, setIsOpen] = useState(false);
 
   const status = status => {
     switch (status) {
