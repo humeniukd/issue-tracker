@@ -2,6 +2,8 @@ import crypto from 'crypto'
 import { NotFoundError, BadRequestError } from './errors.js'
 const __data = {}
 
+const limit = process.env.MAX_ISS || 10
+
 const STATUSES = {
   OPEN: 0,
   PENDING: 1,
@@ -9,7 +11,7 @@ const STATUSES = {
 }
 
 // init
-for (let i = 0; i < 10; i++) {
+for (let i = 0; i < limit; i++) {
   const id = crypto.randomBytes(16).toString('hex')
 
   __data[id] = {
